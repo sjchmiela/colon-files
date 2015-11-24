@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Send file</title>
+  </head>
+  <body>
+    <form action="/solutions" method="post" enctype="multipart/form-data">
+      <label for="file">Solution ID</label>
+      <input type="text" name="solution_id" /><br />
+      <label for="file">Solution file</label>
+      <input type="file" name="solution_file" /><br />
+      <input type="submit" value="Send" />
+    </form>
+  </body>
+</html>
