@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+  <body>
+    <h1>Solutions</h1>
+    <ul>
+      <% @solutions.each do |solution| %>
+        <li>Solution <%= solution.id %>:
+          file located at <%= solution.file_path.nil? ? '??' : solution.file_path %>
+        </li>
+      <% end %>
+    </ul>
+    <p><a href="/solutions/attach">Attach solution</a></p>
+
+    <h1>Tasks</h1>
+    <ul>
+      <% @tasks.each do |task| %>
+        <li>Task <%= task.id %>:<br />
+          infile located at <%= task.in_file_path.nil? ? '??' : task.in_file_path %><br />
+          outfile located at <%= task.out_file_path.nil? ? '??' : task.out_file_path %>
+        </li>
+      <% end %>
+    </ul>
+    <p><a href="/tasks/attach">Attach task</a></p>
+  </body>
+</html>

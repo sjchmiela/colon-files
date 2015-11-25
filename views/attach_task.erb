@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Attach task</title>
+  </head>
+  <body>
+    <form action="/tasks" method="post" enctype="multipart/form-data">
+      <label for="file">Task ID</label>
+      <input type="text" name="task_id" /><br />
+      <label for="file">Task infile</label>
+      <input type="file" name="task_in_file" /><br />
+      <label for="file">Task outfile</label>
+      <input type="file" name="task_out_file" /><br />
+      <input type="submit" value="Send" />
+    </form>
+  </body>
+</html>
