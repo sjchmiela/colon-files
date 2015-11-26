@@ -39,13 +39,15 @@ get '/solutions/:solution_id' do
                    message: 'Could not find solution with specified ID.')
   end
 
+  solution = Solution.find(params[:solution_id])
+
   # Check if solution file exists
-  unless File.file?(Solution.path(params[:solution_id]))
+  unless File.file?(solution.file_path)
     halt 404, json(success: false,
                    message: 'Could not find file for solution with specified ID.')
   end
 
-  send_file Solution.path(params[:solution_id])
+  send_file solution.file_path
 end
 
 get '/tasks/:task_id/in' do
@@ -55,13 +57,15 @@ get '/tasks/:task_id/in' do
                    message: 'Could not find task with specified ID.')
   end
 
+  task = Task.find(params[:task_id])
+
   # Check if task file exists
-  unless File.file?(Task.inPath(params[:task_id]))
+  unless File.file?(task.in_file_path)
     halt 404, json(success: false,
                    message: 'Could not find infile for task with specified ID.')
   end
 
-  send_file Task.inPath(params[:task_id])
+  send_file task.in_file_path
 end
 
 get '/tasks/:task_id/out' do
@@ -71,13 +75,15 @@ get '/tasks/:task_id/out' do
                    message: 'Could not find task with specified ID.')
   end
 
+  task = Task.find(params[:task_id])
+
   # Check if task file exists
-  unless File.file?(Task.outPath(params[:task_id]))
+  unless File.file?(task.out_file_path)
     halt 404, json(success: false,
                    message: 'Could not find outfile for task with specified ID.')
   end
 
-  send_file Task.outPath(params[:task_id])
+  send_file task.out_file_path
 end
 
 post '/solutions' do
