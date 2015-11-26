@@ -24,13 +24,11 @@ get '/' do
   erb :index
 end
 get '/solutions/:solution_id/attach' do
-  erb :attach_solution, locals: {solution_id: params[:solution_id]}
+  erb :attach_solution, locals: { solution_id: params[:solution_id] }
 end
 get '/tasks/:task_id/attach' do
-  erb :attach_task, locals: {task_id: params[:task_id]}
+  erb :attach_task, locals: { task_id: params[:task_id] }
 end
-
-
 
 get '/solutions/:solution_id' do
   # Check if solution with such id exists
@@ -138,20 +136,19 @@ post '/tasks/:task_id' do
 
   task = Task.find(params[:task_id])
 
-  {task_in_file: :in_file_path, task_out_file: :out_file_path}.each do |key, attribute|
-    unless params[key].nil?
-      if File.file?(task[attribute])
-        begin
-          FileUtils.rm(task[attribute])
-        rescue Exception
-          puts "Could not remove file #{task[attribute]}."
-        end
+  { task_in_file: :in_file_path, task_out_file: :out_file_path }.each do |key, attribute|
+    next if params[key].nil?
+    if File.file?(task[attribute])
+      begin
+        FileUtils.rm(task[attribute])
+      rescue Exception
+        puts "Could not remove file #{task[attribute]}."
       end
-      file = params[key][:tempfile]
-      path = (key == :task_in_file) ? Task.inPath(params[:task_id]) : Task.outPath(params[:task_id])
-      FileUtils.move(file.path, path)
-      task[attribute] = path
     end
+    file = params[key][:tempfile]
+    path = (key == :task_in_file) ? Task.inPath(params[:task_id]) : Task.outPath(params[:task_id])
+    FileUtils.move(file.path, path)
+    task[attribute] = path
   end
 
   # Update file path in database
