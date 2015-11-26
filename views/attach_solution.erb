@@ -4,9 +4,8 @@
     <title>Attach solution</title>
   </head>
   <body>
-    <form action="/solutions" method="post" enctype="multipart/form-data">
-      <label for="file">Solution ID</label>
-      <input type="text" name="solution_id" /><br />
+    <form action="/solutions/<%= solution_id %>" method="post" enctype="multipart/form-data">
+      <p>Attaching solution to solution with id: <%= solution_id %>.</p>
       <label for="file">Solution file</label>
       <input type="file" name="solution_file" /><br />
       <input type="submit" value="Send" />

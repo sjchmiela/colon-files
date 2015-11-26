@@ -9,14 +9,13 @@ require_relative 'helpers.rb'
 require_relative 'model.rb'
 
 configure do
-  config = YAML.load_file("./config.yml")
-  ActiveRecord::Base.establish_connection(config["database"])
-  FileUtils.mkpath(config["solutions"]["path"])
-  FileUtils.mkpath(config["tasks"]["path"])
+  config = YAML.load_file('./config.yml')
+  ActiveRecord::Base.establish_connection(config['database'])
+  FileUtils.mkpath(config['solutions']['path'])
+  FileUtils.mkpath(config['tasks']['path'])
 end
 
 # Routes
-
 
 # Testing
 get '/' do
@@ -24,12 +23,13 @@ get '/' do
   @tasks = Task.all
   erb :index
 end
-get '/solutions/attach' do
-  erb :attach_solution
+get '/solutions/:solution_id/attach' do
+  erb :attach_solution, locals: {solution_id: params[:solution_id]}
 end
-get '/tasks/attach' do
-  erb :attach_task
+get '/tasks/:task_id/attach' do
+  erb :attach_task, locals: {task_id: params[:task_id]}
 end
+
 
 
 get '/solutions/:solution_id' do
@@ -86,7 +86,9 @@ get '/tasks/:task_id/out' do
   send_file task.out_file_path
 end
 
-post '/solutions' do
+###
+
+post '/solutions/:solution_id' do
   # Check if solution file is attached
   unless params[:solution_file] and
          tmpfile = params[:solution_file][:tempfile]
@@ -100,13 +102,19 @@ post '/solutions' do
                    message: 'Could not find solution with specified ID.')
   end
 
+  solution = Solution.find(params[:solution_id])
+
+  unless solution.file_path.nil? || solution.file_path.empty?
+    halt 403, json(success: false,
+                   message: 'You cannot overwrite solution file. Submit new solution.')
+  end
+
   # Move file
   file_path = Solution.path(params[:solution_id])
   FileUtils.move(tmpfile.path, file_path)
   p file_path
 
   # Update file path in database
-  solution = Solution.find(params[:solution_id])
   solution.file_path = file_path
   if solution.save
     json(success: true, message: 'File saved and attached to the proper solution.')
@@ -115,37 +123,38 @@ post '/solutions' do
   end
 end
 
-post '/tasks' do
-  # Check if task infile is attached
-  unless params[:task_in_file] and
-         tmp_in_file = params[:task_in_file][:tempfile]
-    halt 400, json(success: false,
-                   message: 'Infile not attached.')
-  end
-
-  # Check if task outfile is attached
-  unless params[:task_out_file] and
-         tmp_out_file = params[:task_out_file][:tempfile]
-    halt 400, json(success: false,
-                   message: 'Outfile not attached.')
-  end
-
+post '/tasks/:task_id' do
   # Check if task with such id exists
   unless Task.exists?(params[:task_id])
     halt 404, json(success: false,
                    message: 'Could not find task with specified ID.')
   end
 
-  # Move files
-  in_file_path = Task.inPath(params[:task_id])
-  FileUtils.move(tmp_in_file.path, in_file_path)
-  out_file_path = Task.outPath(params[:task_id])
-  FileUtils.move(tmp_out_file.path, out_file_path)
+  # Check if any file is attached
+  unless params[:task_in_file].nil? || params[:task_out_file].nil?
+    halt 400, json(success: false,
+                   message: 'No files attached.')
+  end
+
+  task = Task.find(params[:task_id])
+
+  {task_in_file: :in_file_path, task_out_file: :out_file_path}.each do |key, attribute|
+    unless params[key].nil?
+      if File.file?(task[attribute])
+        begin
+          FileUtils.rm(task[attribute])
+        rescue Exception
+          puts "Could not remove file #{task[attribute]}."
+        end
+      end
+      file = params[key][:tempfile]
+      path = (key == :task_in_file) ? Task.inPath(params[:task_id]) : Task.outPath(params[:task_id])
+      FileUtils.move(file.path, path)
+      task[attribute] = path
+    end
+  end
 
   # Update file path in database
-  task = Task.find(params[:task_id])
-  task.in_file_path = in_file_path
-  task.out_file_path = out_file_path
   if task.save
     json(success: true, message: 'Files saved and attached to the proper task.')
   else
