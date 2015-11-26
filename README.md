@@ -30,7 +30,7 @@ solutions
 
 #### Attaching solutions
 
-`POST /solutions` — attach file `solution_file` to solution with id `solution_id`. Expects exactly these request parameters. Solution with specified `solution_id` should already be persisted in database. Returns JSON: `{success:boolean, message:text}`.
+`POST /solutions/:solution_id` — attach file `solution_file` to solution with id `solution_id`. Expects `solution_file` parameter with file attached. Solution with specified `solution_id` should already be persisted in database. Returns JSON: `{success:boolean, message:text}`.
 
 #### Retrieving solution
 `GET /solutions/:solution_id` — retrieve file `solution_id`.
@@ -38,7 +38,7 @@ solutions
 ### Tasks
 
 #### Attaching task files
-`POST /tasks` — attach files `task_in_file` and `task_out_file` to task with id `task_id`. Expects exactly these request parameters. Task with specified `task_id` should already be persisted in database. Returns JSON: `{success:boolean, message:text}`.
+`POST /tasks/:task_id` — attach files `task_in_file` and `task_out_file` to task with id `task_id`. Expects parameters `task_in_file` and `task_out_file` as files. Task with specified `task_id` should already be persisted in database. Returns JSON: `{success:boolean, message:text}`.
 
 #### Retrieving task files
 
