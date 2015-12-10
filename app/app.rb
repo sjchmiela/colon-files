@@ -8,9 +8,23 @@ require 'yaml'
 require_relative 'helpers.rb'
 require_relative 'model.rb'
 
+## Configuration for sinatra. Bind to port 80 on all interfaces
+set :bind, '0.0.0.0'
+set :port, 80
+set :logging, true
+
 configure do
-  config = YAML.load_file('./config.yml')
-  ActiveRecord::Base.establish_connection(config['database'])
+  config = YAML.load_file(File.join(__dir__, 'config.yml'))
+  database = {
+    adapter: 'mysql2',
+    database: ENV['DB_COLON_FILES_DATABASE'],
+    username: ENV['DB_COLON_FILES_USERNAME'],
+    password: ENV['DB_COLON_FILES_PASSWORD'],
+    host: "db",
+    encoding: "utf8",
+    pool: 5
+  }
+  ActiveRecord::Base.establish_connection(database)
   FileUtils.mkpath(config['solutions']['path'])
   FileUtils.mkpath(config['tasks']['path'])
 end

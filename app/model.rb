@@ -1,6 +1,6 @@
 # Model
 class ColonBase < ActiveRecord::Base
-  @@config = YAML.load_file("./config.yml")
+  @@config = YAML.load_file(File.join(__dir__, 'config.yml'))
   self.abstract_class = true
 end
 
