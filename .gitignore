@@ -36,3 +36,6 @@ Gemfile.lock
 
 # Do not include uploaded files
 uploads
+
+# Or secret env file
+secrets.env

@@ -1,0 +1,28 @@
+web:
+  build: .
+  container_name: colon-files
+  env_file:
+    - ./secrets.env.template
+    - ./secrets.env
+  expose:
+    - "80"
+  volumes:
+    - .:/code
+  links:
+    - mysqldb:db
+  volumes_from:
+    - colon-files-data:rw
+mysqldb:
+  image: mysql
+  expose: "3306"
+  volumes:
+    - /var/lib/mysql:/var/lib/mysql
+  env_file:
+    - ./secrets.env.template
+    - ./secrets.env
+myadmin:
+  image: phpmyadmin/phpmyadmin
+  links:
+    - mysqldb:db
+  expose:
+    - "8080"
