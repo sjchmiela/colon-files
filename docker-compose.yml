@@ -1,5 +1,6 @@
 web:
   build: .
+  command: BUNDLE_GEMFILE=/opt/app/Gemfile bundle exec ruby /opt/app/app.rb
   container_name: colon-files
   env_file:
     - ./secrets.env.template
