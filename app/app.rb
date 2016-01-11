@@ -4,6 +4,7 @@ require 'sinatra'
 require 'sinatra/activerecord'
 require 'multi_json'
 require 'yaml'
+require 'sinatra/cross_origin'
 
 require_relative 'helpers.rb'
 require_relative 'model.rb'
@@ -27,6 +28,7 @@ configure do
   ActiveRecord::Base.establish_connection(database)
   FileUtils.mkpath(config['solutions']['path'])
   FileUtils.mkpath(config['tasks']['path'])
+  enable :cross_origin
 end
 
 # Routes
@@ -152,7 +154,8 @@ post '/tasks/:task_id' do
 
   { task_in_file: :in_file_path, task_out_file: :out_file_path }.each do |key, attribute|
     next if params[key].nil?
-    if File.file?(task[attribute])
+
+    if !task[attribute].nil? and File.file?(task[attribute])
       begin
         FileUtils.rm(task[attribute])
       rescue Exception

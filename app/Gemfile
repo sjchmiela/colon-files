@@ -6,3 +6,5 @@ gem 'sinatra'
 gem 'sinatra-activerecord'
 gem 'mysql2', '~> 0.3.20'
 gem 'multi_json'
+
+gem "sinatra-cross_origin", "~> 0.3.1"
