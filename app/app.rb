@@ -143,7 +143,7 @@ post '/tasks/:task_id' do
   end
 
   # Check if any file is attached
-  unless params[:task_in_file].nil? || params[:task_out_file].nil?
+  unless params[:task_in_file] or params[:task_out_file]
     halt 400, json(success: false,
                    message: 'No files attached.')
   end
