@@ -145,7 +145,7 @@ post '/tasks/:task_id' do
   end
 
   # Check if any file is attached
-  unless params[:task_in_file] or params[:task_out_file]
+  unless !params[:task_in_file].nil? or !params[:task_out_file].nil?
     halt 400, json(success: false,
                    message: 'No files attached.')
   end
