@@ -46,5 +46,13 @@ solutions
 
 `GET /tasks/:task_id/out` — retrieve outfile of task with id `task_id`.
 
+<div style="border: 1px solid green; padding: 1em 1em 0.382em 1em; border-radius: 0.618em">
+
+<p>`GET /tasks/:task_id/in` — retrieve infile of task with id `task_id`.</p>
+
+<p>`GET /tasks/:task_id/out` — retrieve outfile of task with id `task_id`.</p>
+
+</div>
+
 ## Testing
 Testing web interface is at `http://localhost:4567/` of the app.
