@@ -64,6 +64,28 @@ get '/solutions/:solution_id' do
   send_file solution.file_path
 end
 
+get '/solutions/:solution_id/in' do
+  unless Solution.exists?(params[:solution_id])
+    halt 404, json(success: false,
+                   message: 'Could not find solution with specified ID.')
+  end
+
+  solution = Solution.find(params[:solution_id])
+
+  redirect to("/tasks/#{solution.task_id}/in"), 302
+end
+
+get '/solutions/:solution_id/out' do
+  unless Solution.exists?(params[:solution_id])
+    halt 404, json(success: false,
+                   message: 'Could not find solution with specified ID.')
+  end
+
+  solution = Solution.find(params[:solution_id])
+
+  redirect to("/tasks/#{solution.task_id}/out"), 302
+end
+
 get '/tasks/:task_id/in' do
   # Check if task with such id exists
   unless Task.exists?(params[:task_id])
